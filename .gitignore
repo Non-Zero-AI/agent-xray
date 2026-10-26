@@ -1,0 +1,14 @@
+node_modules/
+*.log
+.DS_Store
+agent-xray-card.*
+!docs/sample-card.*
+agent-xray-report.html
+agent-xray-sample-report.html
+report.json
+report.html
+xray.png
+hygiene.svg
+*.tgz
+.env
+.env.*

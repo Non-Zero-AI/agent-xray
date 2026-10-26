@@ -1,0 +1,772 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Non-Zero-AI/agent-xray/schema/report.schema.json",
+  "title": "Agent X-ray report",
+  "description": "Output of `agent-xray --json`. schemaVersion is bumped on breaking changes. Never contains secret values: only redacted previews. Paths under the home folder are shown as ~.",
+  "type": "object",
+  "required": [
+    "tool",
+    "version",
+    "schemaVersion",
+    "generatedAt",
+    "sample",
+    "platform",
+    "agents",
+    "servers",
+    "findings",
+    "counts",
+    "overall"
+  ],
+  "properties": {
+    "tool": {
+      "const": "agent-xray"
+    },
+    "version": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sample": {
+      "type": "boolean",
+      "description": "true when produced by `agent-xray demo` (fake data)"
+    },
+    "platform": {
+      "enum": [
+        "linux",
+        "darwin",
+        "win32",
+        "freebsd",
+        "openbsd",
+        "aix",
+        "sunos",
+        "android"
+      ]
+    },
+    "project": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deep": {
+      "type": "boolean"
+    },
+    "overall": {
+      "type": "object",
+      "required": [
+        "grade",
+        "score",
+        "summary"
+      ],
+      "properties": {
+        "grade": {
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "F",
+            null
+          ]
+        },
+        "score": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "files",
+          "servers",
+          "score",
+          "grade",
+          "findings"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "claude-code",
+              "claude-desktop",
+              "cursor",
+              "codex",
+              "gemini",
+              "windsurf",
+              "vscode",
+              "continue",
+              "cline",
+              "roo",
+              "zed",
+              "goose",
+              "stack",
+              "host",
+              "shared",
+              "copilot-cli",
+              "opencode",
+              "openclaw",
+              "aider",
+              "qwen"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "servers": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "grade": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "F"
+            ]
+          },
+          "findings": {
+            "type": "object",
+            "properties": {
+              "critical": {
+                "type": "integer"
+              },
+              "high": {
+                "type": "integer"
+              },
+              "medium": {
+                "type": "integer"
+              },
+              "low": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "servers": {
+      "type": "array",
+      "description": "One entry per distinct MCP server definition (same name + same command/args/url are merged).",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "transport",
+          "agents",
+          "files"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "transport": {
+            "enum": [
+              "stdio",
+              "http",
+              "sse"
+            ]
+          },
+          "command": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "package": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pinned": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "credentials and query string stripped"
+          },
+          "envKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "names only, never values"
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "disabled": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "severity",
+          "category",
+          "agents",
+          "title",
+          "fixer",
+          "agent_prompt",
+          "human_steps"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info"
+            ]
+          },
+          "category": {
+            "enum": [
+              "secret",
+              "yolo",
+              "dangerous-allow",
+              "auto-trust",
+              "sandbox",
+              "broad-root",
+              "insecure-remote",
+              "unpinned",
+              "stale-server",
+              "env-exposure",
+              "parse-error",
+              "host-exposure",
+              "secret-custody",
+              "inventory",
+              "infected",
+              "autorun",
+              "hidden-unicode",
+              "injection",
+              "planted",
+              "lock-drift"
+            ]
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "file": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "evidence": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "redacted preview, e.g. sk-ant-...abcd"
+          },
+          "fix": {
+            "type": "string"
+          },
+          "credential": {
+            "type": "string",
+            "description": "secret findings only: provider/pattern id (e.g. github, supabase-service-role, cli-store). Never the value."
+          },
+          "fixer": {
+            "enum": [
+              "agent",
+              "human",
+              "both"
+            ],
+            "description": "who can fix it: agent = a coding agent can apply it from agent_prompt; human = needs the user (accounts, consoles, SSH access); both = the human rotates/revokes, then the agent updates config"
+          },
+          "agent_prompt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "copy-paste prompt scoped to this one finding (null when fixer is human). Tells the agent to back up first, show a diff, wait for OK and never print secrets."
+          },
+          "human_steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "numbered steps only the human can do (empty when fixer is agent)"
+          },
+          "docs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "label",
+                "url"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "pattern": "^https://"
+                }
+              }
+            },
+            "description": "official documentation links for the human steps"
+          },
+          "refs": {
+            "type": "array",
+            "description": "Cited sources for IOC findings (https only).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "pattern": "^https://"
+                }
+              },
+              "required": [
+                "label",
+                "url"
+              ]
+            }
+          },
+          "iocId": {
+            "type": "string",
+            "description": "Id of the matched indicator in the bundled IOC list (src/iocs.json)."
+          },
+          "persistence": {
+            "type": "boolean",
+            "description": "True when the indicator belongs to a campaign with a persistence service: remove it BEFORE rotating tokens."
+          },
+          "unicode": {
+            "type": "object",
+            "description": "Hidden-character counts and the affected lines made visible (secrets redacted).",
+            "properties": {
+              "tags": {
+                "type": "integer"
+              },
+              "bidi": {
+                "type": "integer"
+              },
+              "zeroWidth": {
+                "type": "integer"
+              },
+              "variation": {
+                "type": "integer"
+              },
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "line": {
+                      "type": "integer"
+                    },
+                    "visible": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "decoded": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "agents": {
+            "type": "array"
+          },
+          "scope": {
+            "enum": [
+              "user",
+              "project",
+              "stack",
+              "host",
+              "managed"
+            ]
+          },
+          "parsed": {
+            "type": "boolean"
+          },
+          "kind": {
+            "type": "string",
+            "description": "stack files only: env, compose, config, token-file"
+          }
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "agents": {
+          "type": "integer"
+        },
+        "mcpServers": {
+          "type": "integer"
+        },
+        "mcpDefinitions": {
+          "type": "integer"
+        },
+        "remoteServers": {
+          "type": "integer"
+        },
+        "plaintextSecrets": {
+          "type": "integer"
+        },
+        "yoloAgents": {
+          "type": "integer"
+        },
+        "dangerousRules": {
+          "type": "integer"
+        },
+        "autoTrust": {
+          "type": "integer"
+        },
+        "unpinnedPackages": {
+          "type": "integer"
+        },
+        "insecureRemote": {
+          "type": "integer"
+        },
+        "broadRoots": {
+          "type": "integer"
+        },
+        "sandboxOff": {
+          "type": "integer"
+        },
+        "staleServers": {
+          "type": "integer"
+        },
+        "envExposure": {
+          "type": "integer"
+        },
+        "bySeverity": {
+          "type": "object"
+        },
+        "hostExposure": {
+          "type": "integer",
+          "description": "host/container exposure findings (non-info)"
+        },
+        "autorunEntries": {
+          "type": "integer"
+        },
+        "riskyAutorun": {
+          "type": "integer"
+        },
+        "iocMatches": {
+          "type": "integer"
+        },
+        "hiddenUnicode": {
+          "type": "integer"
+        },
+        "injection": {
+          "type": "integer"
+        },
+        "plantedFiles": {
+          "type": "integer"
+        },
+        "lockDrift": {
+          "type": "integer"
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "paths",
+        "server"
+      ],
+      "description": "present only with --path / --server"
+    },
+    "label": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "--label: display name for the self-hosted stack"
+    },
+    "strengths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "good practices observed (--path / --server only); not graded"
+    },
+    "stack": {
+      "type": "object",
+      "description": "--path / --server only",
+      "properties": {
+        "roots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filesScanned": {
+          "type": "integer"
+        },
+        "skippedLargeDirs": {
+          "type": "integer"
+        },
+        "filesOfInterest": {
+          "type": "integer"
+        },
+        "backupConfigs": {
+          "type": "integer",
+          "description": "Backup/stale config copies (*.prev*, *.bak, quarantine/\u2026) scanned for secrets but not listed in tools."
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "write": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "autorun": {
+      "type": "array",
+      "description": "Everything that runs automatically: hooks, status lines, key helpers, folder-open tasks, plugins, skills, subagents, rules. Commands are redacted and never executed.",
+      "items": {
+        "type": "object",
+        "required": [
+          "agents",
+          "kind",
+          "file"
+        ],
+        "properties": {
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kind": {
+            "type": "string"
+          },
+          "event": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "matcher": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "command": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "file": {
+            "type": "string"
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "scope": {
+            "type": "string"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "disabled": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "infected": {
+      "type": "object",
+      "description": "Offline IOC check ('Am I infected?').",
+      "required": [
+        "status",
+        "hits"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "clean",
+            "indicators"
+          ]
+        },
+        "hits": {
+          "type": "integer"
+        },
+        "persistence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "iocListUpdated": {
+          "type": "string"
+        },
+        "indicatorsChecked": {
+          "type": "integer"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "badge": {
+      "type": "object",
+      "description": "Harness Hygiene badge.",
+      "properties": {
+        "grade": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "color": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "markdown": {
+          "type": "string"
+        }
+      }
+    },
+    "lock": {
+      "type": "object",
+      "description": "Present after `verify` / `--ci`.",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "drift",
+            "missing"
+          ]
+        },
+        "changes": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

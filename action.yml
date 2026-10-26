@@ -1,0 +1,55 @@
+name: 'Agent X-ray: Harness Hygiene'
+description: 'Fail CI when AI-agent harness files (hooks, MCP servers, instruction files) change without review, or when infection indicators or critical findings appear. Read-only, offline, zero dependencies.'
+author: 'Non-Zero-AI'
+branding:
+  icon: 'shield'
+  color: 'gray-dark'
+inputs:
+  args:
+    description: 'Extra arguments for agent-xray (for example "--deep" or "--iocs .github/extra-iocs.json").'
+    required: false
+    default: ''
+  min-grade:
+    description: 'Also fail if the project grade is worse than this (A-F). Empty = only lock drift, criticals and infection indicators fail.'
+    required: false
+    default: ''
+  lock-file:
+    description: 'Lockfile to verify (default: agent-xray.lock in the working directory). Create it locally with `npx agent-xray lock` and commit it.'
+    required: false
+    default: ''
+  working-directory:
+    description: 'Project folder to scan.'
+    required: false
+    default: '.'
+  badge:
+    description: 'Write a Harness Hygiene badge SVG to this path (for an artifact or a badges branch). Empty = no badge.'
+    required: false
+    default: ''
+outputs:
+  exit-code:
+    description: 'agent-xray exit code (0 = clean, 1 = drift / critical / infected / below min-grade).'
+    value: ${{ steps.xray.outputs.exit-code }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Run agent-xray --ci
+      id: xray
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        XRAY_ARGS: ${{ inputs.args }}
+        XRAY_MIN_GRADE: ${{ inputs.min-grade }}
+        XRAY_LOCK: ${{ inputs.lock-file }}
+        XRAY_BADGE: ${{ inputs.badge }}
+      run: |
+        set +e
+        extra=()
+        [ -n "$XRAY_MIN_GRADE" ] && extra+=(--min-grade "$XRAY_MIN_GRADE")
+        [ -n "$XRAY_LOCK" ] && extra+=(--lock-file "$XRAY_LOCK")
+        [ -n "$XRAY_BADGE" ] && extra+=(--badge "$XRAY_BADGE")
+        # Runs the copy of agent-xray that ships with this action (no npm install, no network).
+        # XRAY_ARGS is split on spaces on purpose; do not put untrusted input in it.
+        node "$GITHUB_ACTION_PATH/bin/agent-xray.js" --ci --project . "${extra[@]}" $XRAY_ARGS
+        code=$?
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        exit $code

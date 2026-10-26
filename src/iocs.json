@@ -1,0 +1,357 @@
+{
+  "name": "agent-xray bundled IOC list",
+  "updated": "2026-10-26",
+  "note": "Offline indicators for known AI-agent harness malware. Edit this file (or pass --iocs <file> with the same shape) to add new indicators. Every entry cites a public source; entries marked verified:false were reported but could not be confirmed from a primary source on the date above. Matching is by file presence, file hash, or text pattern only: agent-xray never runs anything it finds.",
+  "sources": {
+    "stepsecurity": {
+      "title": "StepSecurity: A Mini Shai-Hulud Has Appeared (2026-04-29)",
+      "url": "https://www.stepsecurity.io/blog/a-mini-shai-hulud-has-appeared"
+    },
+    "sonar": {
+      "title": "Sonar: Mini Shai-Hulud targets AI coding agents (2026-05-26)",
+      "url": "https://www.sonarsource.com/blog/mini-shai-hulud-targets-ai-coding-agents/"
+    },
+    "csa": {
+      "title": "CSA research note: Mini Shai-Hulud (2026-05-17)",
+      "url": "https://labs.cloudsecurityalliance.org/research/csa-research-note-shai-hulud-ai-supply-chain-20260517-csa-st/"
+    },
+    "tenable": {
+      "title": "Tenable: AI coding assistant agent harness attacks",
+      "url": "https://www.tenable.com/blog/ai-coding-assistant-agent-harness-attacks"
+    },
+    "ghsa-2f6m": {
+      "title": "GitHub advisory GHSA-2f6m-69ww-37wv",
+      "url": "https://github.com/advisories/GHSA-2f6m-69ww-37wv"
+    },
+    "osv-mal-2026-4219": {
+      "title": "OSV MAL-2026-4219 (fake MCP package)",
+      "url": "https://osv.dev/vulnerability/MAL-2026-4219"
+    },
+    "forever": {
+      "title": "Forever Security: hijacking AI agents via the Downloads folder",
+      "url": "https://forever.security/blog/hijacking-ai-agents-via-downloads-folder/"
+    },
+    "bleeping": {
+      "title": "BleepingComputer: AI coding agents hijacked using AGENTS.md in Downloads (2026-10-25)",
+      "url": "https://www.bleepingcomputer.com/news/security/ai-coding-agents-hijacked-using-agentsmd-file-in-downloads-folder/"
+    },
+    "ox": {
+      "title": "OX Security: npm worm hijacks CI workflows and AI packages",
+      "url": "https://ox.security/blog/npm-worm-hijacks-ci-workflows-ai-packages/"
+    },
+    "pillar": {
+      "title": "Pillar Security: Rules File Backdoor (hidden Unicode in rules files)",
+      "url": "https://www.pillar.security/blog/new-vulnerability-in-github-copilot-and-cursor-how-hackers-can-weaponize-code-agents"
+    }
+  },
+  "campaigns": {
+    "mini-shai-hulud": {
+      "name": "Mini Shai-Hulud (TeamPCP npm/PyPI worm, Apr-May 2026)",
+      "persistenceService": true,
+      "sources": [
+        "stepsecurity",
+        "sonar",
+        "csa",
+        "tenable",
+        "ghsa-2f6m"
+      ]
+    },
+    "downloads-agents-md": {
+      "name": "Planted AGENTS.md in ~/Downloads (Oct 2026)",
+      "sources": [
+        "forever",
+        "bleeping"
+      ]
+    },
+    "fake-mcp-packages": {
+      "name": "Fake / malicious MCP packages on npm (2026)",
+      "sources": [
+        "osv-mal-2026-4219"
+      ]
+    }
+  },
+  "files": [
+    {
+      "id": "msh.claude-setup",
+      "campaign": "mini-shai-hulud",
+      "scope": "project",
+      "path": ".claude/setup.mjs",
+      "what": "Bun loader that the worm commits into every repo it can reach",
+      "confidence": "high",
+      "sha256": [
+        "4066781fa830224c8bbcc3aa005a396657f9c8f9016f9a64ad44a9d7f5f45e34"
+      ]
+    },
+    {
+      "id": "msh.vscode-setup",
+      "campaign": "mini-shai-hulud",
+      "scope": "project",
+      "path": ".vscode/setup.mjs",
+      "what": "copy of the Bun loader for the VS Code folderOpen task",
+      "confidence": "high",
+      "sha256": [
+        "4066781fa830224c8bbcc3aa005a396657f9c8f9016f9a64ad44a9d7f5f45e34"
+      ]
+    },
+    {
+      "id": "msh.claude-execution",
+      "campaign": "mini-shai-hulud",
+      "scope": "project",
+      "path": ".claude/execution.js",
+      "what": "self-copy of the ~11.6 MB obfuscated credential stealer",
+      "confidence": "high",
+      "sha256": [
+        "80a3d2877813968ef847ae73b5eeeb70b9435254e74d7f07d8cf4057f0a710ac",
+        "6f933d00b7d05678eb43c90963a80b8947c4ae6830182f89df31da9f568fea95"
+      ]
+    },
+    {
+      "id": "msh.config-index",
+      "campaign": "mini-shai-hulud",
+      "scope": "home",
+      "path": ".config/index.js",
+      "what": "payload the worm stages for its injected SessionStart hooks (bun run ~/.config/index.js)",
+      "confidence": "medium"
+    },
+    {
+      "id": "msh.kitty-cat",
+      "campaign": "mini-shai-hulud",
+      "scope": "home",
+      "path": ".local/share/kitty/cat.py",
+      "what": "kitty-monitor daemon script (polls GitHub for signed C2 commands)",
+      "confidence": "high"
+    },
+    {
+      "id": "msh.gh-token-monitor-sh",
+      "campaign": "mini-shai-hulud",
+      "scope": "home",
+      "path": ".local/bin/gh-token-monitor.sh",
+      "what": "gh-token-monitor script (validates stolen tokens; wipes home if they are rotated while it runs)",
+      "confidence": "high",
+      "persistence": true
+    },
+    {
+      "id": "msh.workflow-format-check",
+      "campaign": "mini-shai-hulud",
+      "scope": "project",
+      "path": ".github/workflows/format-check.yml",
+      "contains": "toJSON(secrets)",
+      "what": "injected 'Formatter' workflow that dumps every repo secret into an artifact",
+      "confidence": "high"
+    },
+    {
+      "id": "msh.workflow-discussion",
+      "campaign": "mini-shai-hulud",
+      "scope": "project",
+      "path": ".github/workflows/discussion.yaml",
+      "what": "Shai-Hulud family workflow file named in the CSA note",
+      "confidence": "medium"
+    },
+    {
+      "id": "msh.workflow-shai-hulud",
+      "campaign": "mini-shai-hulud",
+      "scope": "project",
+      "path": ".github/workflows/shai-hulud-workflow.yml",
+      "what": "Shai-Hulud family workflow file named in the CSA note",
+      "confidence": "high"
+    }
+  ],
+  "services": [
+    {
+      "id": "msh.svc.gh-token-monitor",
+      "campaign": "mini-shai-hulud",
+      "name": "gh-token-monitor",
+      "what": "persistence service that destroys the home folder if tokens are rotated while it runs (CSA)",
+      "persistence": true
+    },
+    {
+      "id": "msh.svc.kitty-monitor",
+      "campaign": "mini-shai-hulud",
+      "name": "kitty-monitor",
+      "what": "daemon that polls GitHub for signed C2 commands",
+      "persistence": true
+    }
+  ],
+  "commands": [
+    {
+      "id": "msh.hook.setup-mjs",
+      "campaign": "mini-shai-hulud",
+      "re": "\\bnode\\s+(\\./)?\\.(claude|vscode)/setup\\.mjs\\b",
+      "what": "Claude Code SessionStart hook / VS Code folderOpen task that starts the worm loader"
+    },
+    {
+      "id": "msh.hook.config-index",
+      "campaign": "mini-shai-hulud",
+      "re": "\\bbun\\s+(run\\s+)?(~|\\$HOME|\\$\\{HOME\\})/\\.config/index\\.js\\b",
+      "what": "SessionStart hook appended to every AI-tool settings.json the worm finds"
+    },
+    {
+      "id": "msh.hook.execution-js",
+      "campaign": "mini-shai-hulud",
+      "re": "\\bbun\\s+(run\\s+)?\\S*execution\\.js\\b",
+      "what": "runs the worm payload under Bun"
+    }
+  ],
+  "text": [
+    {
+      "id": "msh.text.dune-repo",
+      "campaign": "mini-shai-hulud",
+      "re": "A Mini Shai-Hulud has Appeared",
+      "what": "description the worm puts on its exfiltration repos"
+    },
+    {
+      "id": "msh.text.dependabout",
+      "campaign": "mini-shai-hulud",
+      "re": "dependabout/github_actions/format/setup-formatter",
+      "what": "typosquatted Dependabot branch used for secret-dumping workflows"
+    },
+    {
+      "id": "msh.text.cipher-salt",
+      "campaign": "mini-shai-hulud",
+      "re": "ctf-scramble-v2",
+      "what": "string cipher salt unique to the Shai-Hulud / TeamPCP toolchain"
+    }
+  ],
+  "packages": [
+    {
+      "id": "pkg.function-color",
+      "campaign": "downloads-agents-md",
+      "ecosystem": "npm",
+      "name": "function-color",
+      "status": "malicious",
+      "what": "package a planted AGENTS.md tells the agent to install",
+      "verified": true,
+      "sources": [
+        "forever",
+        "bleeping"
+      ]
+    },
+    {
+      "id": "pkg.wallet-security-checker",
+      "campaign": "fake-mcp-packages",
+      "ecosystem": "npm",
+      "name": "wallet-security-checker",
+      "status": "malicious",
+      "what": "fake MCP package (MAL-2026-4219), one of 10 published 2026-05-19..21; the other 9 names are not in this list yet",
+      "verified": true
+    },
+    {
+      "id": "pkg.gadgethumans-mcp",
+      "campaign": "fake-mcp-packages",
+      "ecosystem": "npm",
+      "name": "gadgethumans-mcp",
+      "status": "malicious",
+      "what": "MCP package reported to exfiltrate WALLET_PRIVATE_KEY (reported by Knostic; primary write-up not re-checked)",
+      "verified": false
+    },
+    {
+      "id": "pkg.mbt",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "name": "mbt",
+      "status": "compromised-versions",
+      "versions": [
+        "1.2.48"
+      ],
+      "verified": true
+    },
+    {
+      "id": "pkg.cap-js-sqlite",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "name": "@cap-js/sqlite",
+      "status": "compromised-versions",
+      "versions": [
+        "2.2.2"
+      ],
+      "verified": true
+    },
+    {
+      "id": "pkg.cap-js-postgres",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "name": "@cap-js/postgres",
+      "status": "compromised-versions",
+      "versions": [
+        "2.2.2"
+      ],
+      "verified": true
+    },
+    {
+      "id": "pkg.cap-js-db-service",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "name": "@cap-js/db-service",
+      "status": "compromised-versions",
+      "versions": [
+        "2.10.1"
+      ],
+      "verified": true
+    },
+    {
+      "id": "pkg.mcp-mermaid",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "name": "mcp-mermaid",
+      "status": "watch",
+      "what": "MCP server from the hijacked atool account; exact bad versions not confirmed here, so pin a version published before 2026-05-11 or after the cleanup",
+      "verified": false
+    },
+    {
+      "id": "pkg.antv-mcp-server",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "name": "@antv/mcp-server-antv",
+      "status": "watch",
+      "what": "MCP server in the @antv scope hit by the atool account hijack; exact bad versions not confirmed here",
+      "verified": false
+    },
+    {
+      "id": "pkg.pypi-mistralai",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "pypi",
+      "name": "mistralai",
+      "status": "compromised-versions",
+      "versions": [
+        "2.4.6"
+      ],
+      "verified": true,
+      "sources": [
+        "csa"
+      ]
+    },
+    {
+      "id": "pkg.pypi-guardrails-ai",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "pypi",
+      "name": "guardrails-ai",
+      "status": "compromised-versions",
+      "versions": [
+        "0.10.1"
+      ],
+      "verified": true,
+      "sources": [
+        "csa"
+      ]
+    }
+  ],
+  "scopes": [
+    {
+      "id": "scope.msh",
+      "campaign": "mini-shai-hulud",
+      "ecosystem": "npm",
+      "scopes": [
+        "@antv",
+        "@tanstack",
+        "@uipath",
+        "@mistralai",
+        "@squawk",
+        "@tallyui",
+        "@beproduct",
+        "@cap-js"
+      ],
+      "window": "2026-04-29..2026-05-19",
+      "what": "namespaces with malicious releases in the Mini Shai-Hulud window; an UNPINNED package from these scopes may have pulled a bad release"
+    }
+  ]
+}

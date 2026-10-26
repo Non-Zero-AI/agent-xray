@@ -1,0 +1,70 @@
+{
+  "name": "agent-xray",
+  "version": "0.3.0",
+  "description": "One command to see what your AI coding agents can reach and run: MCP servers, hooks and auto-run commands, plaintext keys, YOLO modes, poisoned instruction files, Shai-Hulud IOCs. Lockfile + GitHub Action. Read-only, offline, zero dependencies.",
+  "type": "module",
+  "bin": {
+    "agent-xray": "bin/agent-xray.js"
+  },
+  "main": "src/scan.js",
+  "exports": {
+    ".": "./src/scan.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "schema",
+    "README.md",
+    "GRADING.md",
+    "SKILL.md",
+    "LICENSE",
+    "action.yml",
+    "examples",
+    "docs/HARNESS-HYGIENE.md",
+    "docs/CONFIG-SOURCES.md"
+  ],
+  "scripts": {
+    "test": "node --test test/",
+    "demo": "node bin/agent-xray.js demo",
+    "card": "node bin/agent-xray.js demo --card docs/sample-card.png",
+    "report": "node bin/agent-xray.js demo --html docs/sample-report.html"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "mcp",
+    "security",
+    "audit",
+    "claude-code",
+    "cursor",
+    "codex",
+    "gemini-cli",
+    "copilot",
+    "windsurf",
+    "secrets",
+    "hooks",
+    "opencode",
+    "openclaw",
+    "aider",
+    "qwen-code",
+    "copilot-cli",
+    "supply-chain",
+    "shai-hulud",
+    "prompt-injection",
+    "github-action"
+  ],
+  "author": "Non-Zero-AI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Non-Zero-AI/agent-xray.git"
+  },
+  "homepage": "https://github.com/Non-Zero-AI/agent-xray#readme",
+  "bugs": {
+    "url": "https://github.com/Non-Zero-AI/agent-xray/issues"
+  }
+}
