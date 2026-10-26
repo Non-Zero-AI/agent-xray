@@ -48,7 +48,7 @@ test('every finding carries fixer, agent_prompt and human_steps', () => {
       assert.match(f.agent_prompt, /ONE issue/);
       assert.match(f.agent_prompt, /NEVER print/);
       assert.match(f.agent_prompt, /Back up every file/);
-      assert.match(f.agent_prompt, /npx agent-xray/);
+      assert.match(f.agent_prompt, /npx @non-zero_ai\/agent-xray/);
     }
     if (f.fixer !== 'agent') assert.ok(f.human_steps.length > 0, f.id);
     for (const d of f.docs || []) assert.match(d.url, /^https:\/\//);
@@ -67,11 +67,11 @@ test('human-only and server guidance: root SSH keys, CLI logins, live-server rul
   const gh = fixFor({ id: 'secret.plaintext', severity: 'medium', category: 'secret', agents: ['shared'], title: 'GitHub CLI login token stored in plain text', credential: 'cli-store', file: '~/.config/gh/hosts.yml' }, { server: true });
   assert.equal(gh.fixer, 'human');
   assert.ok(gh.docs.some((d) => d.url === 'https://cli.github.com/manual/gh_auth_logout'));
-  const sr = fixFor({ id: 'secret.plaintext', severity: 'high', category: 'secret', agents: ['shared'], title: 'Plaintext Supabase service_role key (in a .env file)', file: '~/app/.env', line: 3, evidence: 'eyJ...abcd' }, { server: true, verify: 'npx agent-xray --server' });
+  const sr = fixFor({ id: 'secret.plaintext', severity: 'high', category: 'secret', agents: ['shared'], title: 'Plaintext Supabase service_role key (in a .env file)', file: '~/app/.env', line: 3, evidence: 'eyJ...abcd' }, { server: true, verify: 'npx @non-zero_ai/agent-xray --server' });
   assert.equal(sr.fixer, 'both');
   assert.match(sr.human_steps.join(' '), /Supabase/);
   assert.match(sr.agent_prompt, /live server/);
-  assert.match(sr.agent_prompt, /npx agent-xray --server/);
+  assert.match(sr.agent_prompt, /npx @non-zero_ai\/agent-xray --server/);
 });
 
 test('HTML: no secret values, no raw injected markup, no external resources', () => {

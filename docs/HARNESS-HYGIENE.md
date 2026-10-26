@@ -41,9 +41,9 @@ matched. Treat it as an incident, not a style problem.
 
 ## Badge
 
-- Static (shields.io): `npx agent-xray --json | jq -r .badge.markdown` prints the Markdown for your current grade.
+- Static (shields.io): `npx @non-zero_ai/agent-xray --json | jq -r .badge.markdown` prints the Markdown for your current grade.
   agent-xray itself never contacts shields.io. The image loads when someone views your README.
-- Local SVG, no third party: `npx agent-xray --badge docs/harness-hygiene.svg`, then commit it and reference it from
+- Local SVG, no third party: `npx @non-zero_ai/agent-xray --badge docs/harness-hygiene.svg`, then commit it and reference it from
   the README. The badge carries the grade only: no paths, counts or names.
 
 A badge is a snapshot of the files on disk when it was made. It doesn't prove the setup is secure, and it can't see

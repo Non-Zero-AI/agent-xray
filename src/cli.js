@@ -19,12 +19,12 @@ const T = (p) => tildify(p, os.homedir());
 const HELP = `agent-xray ${VERSION} — see what your AI coding agents can reach.
 
 Usage
-  npx agent-xray                 scan this machine (+ the current folder as a project)
-  npx agent-xray demo            run on bundled SAMPLE data (no real files read)
-  npx agent-xray lock            write agent-xray.lock: hashes of harness files, hooks and MCP
+  npx @non-zero_ai/agent-xray                 scan this machine (+ the current folder as a project)
+  npx @non-zero_ai/agent-xray demo            run on bundled SAMPLE data (no real files read)
+  npx @non-zero_ai/agent-xray lock            write agent-xray.lock: hashes of harness files, hooks and MCP
                                  server definitions in this project (no secret values)
-  npx agent-xray verify          re-scan and fail if anything changed or appeared since the lock
-  npx agent-xray --ci            CI mode: GitHub annotations, exit 1 on lock drift, any critical
+  npx @non-zero_ai/agent-xray verify          re-scan and fail if anything changed or appeared since the lock
+  npx @non-zero_ai/agent-xray --ci            CI mode: GitHub annotations, exit 1 on lock drift, any critical
                                  finding or any infection indicator (verifies the lock if present)
 
 Options
@@ -143,7 +143,7 @@ export async function main(argv = process.argv.slice(2), io = { out: process.std
     const lock = buildLock(report, { home, project, user: o.user });
     fs.writeFileSync(lockFile, serializeLock(lock));
     io.out.write(`Lock written: ${T(lockFile)} (${Object.keys(lock.files).length} files, ${lock.autorun.length} auto-run entries, ${Object.keys(lock.mcpServers).length} MCP servers; scope: ${lock.scope})\n`);
-    io.out.write('Commit it, then run `npx agent-xray verify` (or --ci) to catch anything that changes or appears.\n');
+    io.out.write('Commit it, then run `npx @non-zero_ai/agent-xray verify` (or --ci) to catch anything that changes or appears.\n');
     return 0;
   }
   if ((o.cmd === 'verify' || o.ci) && !report.sample && !o.fromJson) {
@@ -153,7 +153,7 @@ export async function main(argv = process.argv.slice(2), io = { out: process.std
     }
     if (!old) {
       report.lock = { file: lockFile ? T(lockFile) : null, status: 'missing', changes: 0 };
-      if (o.cmd === 'verify') { io.err.write(`No lock found at ${lockFile ? T(lockFile) : '(no project)'}. Run \`npx agent-xray lock\` first.\n`); return 2; }
+      if (o.cmd === 'verify') { io.err.write(`No lock found at ${lockFile ? T(lockFile) : '(no project)'}. Run \`npx @non-zero_ai/agent-xray lock\` first.\n`); return 2; }
     } else {
       const cur = buildLock(report, { home, project, user: old.scope === 'project+user' || o.user });
       const drift = diffLock(old, cur);
@@ -213,7 +213,7 @@ export async function main(argv = process.argv.slice(2), io = { out: process.std
   }
 
   if (o.cmd === 'verify' && report.lock?.status === 'drift') {
-    if (!o.ci && !o.json) io.err.write(`agent-xray.lock: ${report.lock.changes} change(s) since the lock. Review them above; if intended, run \`npx agent-xray lock\`.\n`);
+    if (!o.ci && !o.json) io.err.write(`agent-xray.lock: ${report.lock.changes} change(s) since the lock. Review them above; if intended, run \`npx @non-zero_ai/agent-xray lock\`.\n`);
     return 1;
   }
   if (o.ci) {
@@ -244,7 +244,7 @@ export function renderCi(report) {
   const c = report.counts;
   L.push(`agent-xray ${report.version}: Harness Hygiene ${report.overall.grade || 'n/a'}${report.overall.score != null ? ` (${report.overall.score}/100)` : ''}`);
   L.push(`  infected: ${report.infected?.status || 'n/a'} · critical ${c.bySeverity.critical} · high ${c.bySeverity.high} · auto-run ${c.autorunEntries ?? 0} (${c.riskyAutorun ?? 0} risky) · lock: ${report.lock?.status || 'not checked'}${report.lock?.changes ? ` (${report.lock.changes} changes)` : ''}`);
-  if (report.infected?.status === 'indicators') L.push('  INFECTION INDICATORS: remove the persistence service BEFORE rotating any token. Run `npx agent-xray` locally for the steps.');
+  if (report.infected?.status === 'indicators') L.push('  INFECTION INDICATORS: remove the persistence service BEFORE rotating any token. Run `npx @non-zero_ai/agent-xray` locally for the steps.');
   if (report.badge) L.push(`  badge: ${report.badge.markdown}`);
   return L.join('\n');
 }

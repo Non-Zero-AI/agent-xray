@@ -10,7 +10,7 @@ VS Code/Copilot, Copilot CLI, OpenCode, OpenClaw, Aider, Qwen Code, Windsurf, Ze
 graded A–F. It also checks offline for leftovers of Shai-Hulud-style supply-chain worms.
 
 ```bash
-npx agent-xray --html --open
+npx @non-zero_ai/agent-xray --html --open
 ```
 
 That writes **`agent-xray-report.html`**, one offline file that opens in your browser. This is the main output:
@@ -23,10 +23,10 @@ That writes **`agent-xray-report.html`**, one offline file that opens in your br
   *Both* means you rotate the key, then your agent updates the config.
 - **Sort and filter** by severity, agent, who fixes it, or status, and search.
 - **Mark fixed** as you go. The grade ring shows your projected score live, and your ticks are saved in that browser.
-- **Copy fix-all prompt** builds one prompt from everything still open. Then re-run `npx agent-xray --html --open` to check.
+- **Copy fix-all prompt** builds one prompt from everything still open. Then re-run `npx @non-zero_ai/agent-xray --html --open` to check.
 - No secrets in it (redacted previews only), no network requests, nothing loaded from outside the file.
 
-Try it on fake data first: `npx agent-xray demo --html --open`. A static copy is in [docs/sample-report.html](docs/sample-report.html).
+Try it on fake data first: `npx @non-zero_ai/agent-xray demo --html --open`. A static copy is in [docs/sample-report.html](docs/sample-report.html).
 
 ### The shareable card
 
@@ -34,7 +34,7 @@ Try it on fake data first: `npx agent-xray demo --html --open`. A static copy is
 
 ![Agent X-ray sample card (SAMPLE DATA)](docs/sample-card.png)
 
-<sub>Both pictures are from `npx agent-xray demo`, which uses a bundled fake home folder. They are not anyone's real machine.</sub>
+<sub>Both pictures are from `npx @non-zero_ai/agent-xray demo`, which uses a bundled fake home folder. They are not anyone's real machine.</sub>
 
 ## Am I infected?
 
@@ -66,18 +66,18 @@ Stray instruction files planted in `~/Downloads`, your home root or temp folders
 ## Lockfile, CI and badge
 
 ```bash
-npx agent-xray lock        # writes agent-xray.lock: SHA-256 of harness files, hooks/auto-run entries, MCP server
+npx @non-zero_ai/agent-xray lock        # writes agent-xray.lock: SHA-256 of harness files, hooks/auto-run entries, MCP server
                            # definitions and pinned versions (no secret values; env/header values are not stored)
-npx agent-xray verify      # exit 1 if anything changed, appeared or disappeared since the lock
-npx agent-xray --ci        # GitHub annotations; exit 1 on lock drift, any critical or any infection indicator
-npx agent-xray --badge hygiene.svg   # local SVG badge for the grade (or use report.badge.markdown from --json)
+npx @non-zero_ai/agent-xray verify      # exit 1 if anything changed, appeared or disappeared since the lock
+npx @non-zero_ai/agent-xray --ci        # GitHub annotations; exit 1 on lock drift, any critical or any infection indicator
+npx @non-zero_ai/agent-xray --badge hygiene.svg   # local SVG badge for the grade (or use report.badge.markdown from --json)
 ```
 
 `lock` covers the project by default. Add `--user` to include your user-level files on your own machine.
 GitHub Action (see [examples/agent-xray-workflow.yml](examples/agent-xray-workflow.yml)):
 
 ```yaml
-- uses: Non-Zero-AI/agent-xray@v0.3.0
+- uses: Non-Zero-AI/agent-xray@v0.3.1
   with:
     min-grade: C
 ```
@@ -104,22 +104,22 @@ in under a second and tells you, in plain English:
 ## Usage
 
 ```bash
-npx agent-xray                     # scan this machine + the current folder as a project (terminal summary)
-npx agent-xray --html --open       # interactive report: who fixes what + fix prompts (start here)
-npx agent-xray --html report.html  # same, to a path of your choice, without opening it
-npx agent-xray demo                # try it on SAMPLE data first
-npx agent-xray --card xray.png     # shareable card (no paths, no secrets on it)
-npx agent-xray --fix-prompt        # a prompt to paste into your agent so it fixes the findings
-npx agent-xray --deep              # also check .env exposure in the project
-npx agent-xray --json > report.json  # machine-readable, see schema/report.schema.json
-npx agent-xray --from-json report.json --html   # rebuild the HTML from a saved JSON report (e.g. one copied off a server)
-npx agent-xray --min-grade B       # CI: exit 1 if the grade is worse than B
-npx agent-xray lock / verify / --ci  # lockfile + CI gate (see above)
-npx agent-xray --iocs extra.json   # merge your own IOC list over the bundled one
+npx @non-zero_ai/agent-xray                     # scan this machine + the current folder as a project (terminal summary)
+npx @non-zero_ai/agent-xray --html --open       # interactive report: who fixes what + fix prompts (start here)
+npx @non-zero_ai/agent-xray --html report.html  # same, to a path of your choice, without opening it
+npx @non-zero_ai/agent-xray demo                # try it on SAMPLE data first
+npx @non-zero_ai/agent-xray --card xray.png     # shareable card (no paths, no secrets on it)
+npx @non-zero_ai/agent-xray --fix-prompt        # a prompt to paste into your agent so it fixes the findings
+npx @non-zero_ai/agent-xray --deep              # also check .env exposure in the project
+npx @non-zero_ai/agent-xray --json > report.json  # machine-readable, see schema/report.schema.json
+npx @non-zero_ai/agent-xray --from-json report.json --html   # rebuild the HTML from a saved JSON report (e.g. one copied off a server)
+npx @non-zero_ai/agent-xray --min-grade B       # CI: exit 1 if the grade is worse than B
+npx @non-zero_ai/agent-xray lock / verify / --ci  # lockfile + CI gate (see above)
+npx @non-zero_ai/agent-xray --iocs extra.json   # merge your own IOC list over the bundled one
 
 # custom / self-hosted agent stacks (v0.2)
-npx agent-xray --path ./my-agent           # scan a folder: .env, compose, MCP + service configs, token files
-npx agent-xray --server --label "prod-agent"   # on a Linux server: stack files + host checks (run as the service owner or root)
+npx @non-zero_ai/agent-xray --path ./my-agent           # scan a folder: .env, compose, MCP + service configs, token files
+npx @non-zero_ai/agent-xray --server --label "prod-agent"   # on a Linux server: stack files + host checks (run as the service owner or root)
 ```
 
 ### Custom and self-hosted stacks (`--path`, `--server`)

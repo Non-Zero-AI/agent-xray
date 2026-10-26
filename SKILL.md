@@ -5,11 +5,11 @@ description: Audit what AI coding agents on this machine can reach (MCP servers,
 
 # Agent X-ray
 
-1. From the user's project folder, run `npx -y agent-xray@latest --deep --html --open`.
+1. From the user's project folder, run `npx -y @non-zero_ai/agent-xray@latest --deep --html --open`.
    It is read-only and offline. It writes `agent-xray-report.html` and opens it in the browser.
    - On a server, add `--server` (and `--label "<name>"`). There is usually no desktop there, so skip `--open`,
      and tell the user the file path so they can copy it to their laptop.
-   - Also run `npx -y agent-xray@latest --deep --json` (same flags) so you can read the findings yourself.
+   - Also run `npx -y @non-zero_ai/agent-xray@latest --deep --json` (same flags) so you can read the findings yourself.
 2. **Check `infected.status` first.** If it is `infected` or `suspicious`, lead with it and read out `infected.steps`
    in order. The persistence service must be removed **before** any token is rotated, because rotating first can
    trigger a destructive wipe. Do not delete, kill or edit anything yourself for these findings (they are
@@ -31,8 +31,8 @@ description: Audit what AI coding agents on this machine can reach (MCP servers,
    - On a live server, don't restart services yourself. Draft the commands and let the user run them.
    - Hidden Unicode / injected instructions: show the made-visible text from `evidence`, and offer to remove only
      the hidden characters or the injected lines, after the user confirms.
-4. Optional, in a repo: offer `npx agent-xray lock` and the GitHub Action from `examples/` so changes get reviewed.
+4. Optional, in a repo: offer `npx @non-zero_ai/agent-xray lock` and the GitHub Action from `examples/` so changes get reviewed.
 5. Re-run with `--html --open` and show the new grade. The user can tick "Mark fixed" in the report to track the rest.
 
-`npx agent-xray --fix-prompt` prints a ready-made version of these instructions with the findings filled in.
+`npx @non-zero_ai/agent-xray --fix-prompt` prints a ready-made version of these instructions with the findings filled in.
 The report's "Copy fix-all prompt" button does the same, leaving out anything already marked fixed.

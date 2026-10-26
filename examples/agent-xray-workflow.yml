@@ -1,7 +1,7 @@
 # Copy to .github/workflows/agent-xray.yml
-# 1. Locally, in your repo: `npx agent-xray lock` and commit agent-xray.lock.
+# 1. Locally, in your repo: `npx @non-zero_ai/agent-xray lock` and commit agent-xray.lock.
 # 2. Every PR that adds or edits a hook, MCP server, skill, rule or instruction file (AGENTS.md, CLAUDE.md, ...)
-#    then fails until someone reviews it and re-runs `npx agent-xray lock`.
+#    then fails until someone reviews it and re-runs `npx @non-zero_ai/agent-xray lock`.
 name: agent-xray
 on:
   pull_request:
@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 20
       # Pin to a full commit SHA once you have reviewed the action source.
-      - uses: Non-Zero-AI/agent-xray@v0.3.0
+      - uses: Non-Zero-AI/agent-xray@v0.3.1
         with:
           min-grade: C        # optional
           # args: --deep      # also check .env exposure

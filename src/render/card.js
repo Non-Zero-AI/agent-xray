@@ -89,9 +89,9 @@ export function renderCardSvg(r) {
   <text x="448" y="428" font-family="${FONT}" font-size="15" font-weight="700" fill="#64748b" letter-spacing="2">GRADE BY AGENT</text>
   ${chips}
   <line x1="48" y1="550" x2="${W - 48}" y2="550" stroke="#1e293b" stroke-width="2"/>
-  <rect x="48" y="570" width="270" height="44" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.5"/>
-  <text x="66" y="599" font-family="${MONO}" font-size="21" font-weight="700" fill="#38bdf8">$ npx agent-xray</text>
-  <text x="340" y="598" font-family="${FONT}" font-size="17" fill="#94a3b8">read-only · offline · nothing uploaded · every secret redacted</text>
+  <rect x="48" y="570" width="400" height="44" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.5"/>
+  <text x="66" y="599" font-family="${MONO}" font-size="21" font-weight="700" fill="#38bdf8">$ npx @non-zero_ai/agent-xray</text>
+  <text x="470" y="598" font-family="${FONT}" font-size="17" fill="#94a3b8">read-only · offline · every secret redacted</text>
   <text x="${W - 48}" y="598" text-anchor="end" font-family="${FONT}" font-size="17" font-weight="700" fill="#475569">Non-Zero-AI</text>
 </svg>
 `;

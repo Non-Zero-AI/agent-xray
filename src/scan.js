@@ -16,7 +16,7 @@ import { scanHost, hostHomes, sysPath } from './host.js';
 import { loadIocs, iocSummary } from './iocs.js';
 import { makeHarness, globPaths, parseJson5, INFECTED_STEPS } from './harness.js';
 
-export const VERSION = '0.3.0';
+export const VERSION = '0.3.1';
 export const SCHEMA_VERSION = 1;
 const MAX_FILE = 5 * 1024 * 1024;
 

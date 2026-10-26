@@ -99,7 +99,7 @@ test('CLI: help, version, bad flag, demo --json, --min-grade, --card svg', async
     assert.equal(await main(['demo', '--card', path.join(tmp, 'c.svg')], c.io), 0);
     const svg = fs.readFileSync(path.join(tmp, 'c.svg'), 'utf8');
     assert.match(svg, /SAMPLE DATA/);
-    assert.match(svg, /npx agent-xray/);
+    assert.match(svg, /npx @non-zero_ai\/agent-xray/);
     c = capture(); // PATH empty and no browser override -> PNG falls back to SVG (unless a Playwright cache exists)
     assert.equal(await main(['demo', '--card', path.join(tmp, 'c.png')], { ...c.io, env: { PATH: '', HOME: tmp } }), 0);
     assert.ok(fs.existsSync(path.join(tmp, 'c.svg')));

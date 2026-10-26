@@ -14,7 +14,7 @@ inputs:
     required: false
     default: ''
   lock-file:
-    description: 'Lockfile to verify (default: agent-xray.lock in the working directory). Create it locally with `npx agent-xray lock` and commit it.'
+    description: 'Lockfile to verify (default: agent-xray.lock in the working directory). Create it locally with `npx @non-zero_ai/agent-xray lock` and commit it.'
     required: false
     default: ''
   working-directory:

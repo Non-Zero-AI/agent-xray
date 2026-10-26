@@ -43,7 +43,7 @@ export function renderTerminal(r, { color = true, verbose = false } = {}) {
   }
   if (r.lock) {
     const L = r.lock;
-    p(`  ${c.bold('LOCK')} ${L.status === 'ok' ? c.green('matches ' + L.file) : L.status === 'missing' ? c.yellow('no lock file: run `npx agent-xray lock`') : c.red(`${L.changes.length} change${L.changes.length === 1 ? '' : 's'} since ${L.file}`)}`);
+    p(`  ${c.bold('LOCK')} ${L.status === 'ok' ? c.green('matches ' + L.file) : L.status === 'missing' ? c.yellow('no lock file: run `npx @non-zero_ai/agent-xray lock`') : c.red(`${L.changes.length} change${L.changes.length === 1 ? '' : 's'} since ${L.file}`)}`);
     p();
   }
   p(`  ${c.bold('AGENTS')}`);
@@ -100,12 +100,12 @@ export function renderTerminal(r, { color = true, verbose = false } = {}) {
   }
   p();
   p(c.gray('  ' + '─'.repeat(66)));
-  const base = r.sample ? 'npx agent-xray demo' : `npx agent-xray${r.mode === 'server' ? ' --server' : ''}`;
+  const base = r.sample ? 'npx @non-zero_ai/agent-xray demo' : `npx @non-zero_ai/agent-xray${r.mode === 'server' ? ' --server' : ''}`;
   p(`  ${c.bold(c.cyan('Interactive report'))} ${c.cyan(`${base} --html --open`)}   ${c.gray('(who fixes what + copy-paste fix prompts)')}`);
   p(`  ${c.bold('Share your grade')}   ${base} --card xray.png`);
   p(`  ${c.bold('Fix it with AI')}     ${base} --fix-prompt   ${c.gray('(paste into your agent)')}`);
-  if (!r.mode) p(`  ${c.bold('Scan .env exposure')} npx agent-xray --deep`);
-  if (!r.mode && !r.sample) p(`  ${c.bold('Lock it in CI')}      npx agent-xray lock  ${c.gray('then')}  npx agent-xray --ci`);
+  if (!r.mode) p(`  ${c.bold('Scan .env exposure')} npx @non-zero_ai/agent-xray --deep`);
+  if (!r.mode && !r.sample) p(`  ${c.bold('Lock it in CI')}      npx @non-zero_ai/agent-xray lock  ${c.gray('then')}  npx @non-zero_ai/agent-xray --ci`);
   p();
   return out.join('\n');
 }
